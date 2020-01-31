@@ -90,7 +90,7 @@ header {
 }
 .background {
     
-    background: url(IMG/21.png) 100% 100% no-repeat;
+    background: url(img/21.png) 100% 100% no-repeat;
     position: relative;
     min-width: 50%;
     overflow: hidden; 
@@ -163,18 +163,18 @@ header {
 }
     
 .pica1 {
-    background-image: url("IMG/1.png"); 
+    background-image: url("img/1.png"); 
     
 }
 
 .pica2 {
-    background-image: url("IMG/2.png"); 
+    background-image: url("img/2.png"); 
 }
 .pica3{
-    background-image: url("IMG/3.png"); 
+    background-image: url("img/3.png"); 
 }
 .pica4{
-    background-image: url("IMG/4.png"); 
+    background-image: url("img/4.png"); 
 }    
 
 
@@ -232,23 +232,23 @@ a { cursor: pointer;
 }
 .pic1 {
     background-size: contain;
-    background: url("IMG/Diplom.png");
+    background: url("img/Diplom.png");
 }
 .pic2 {
     background-size: contain;
-    background: url("IMG/pan.png");
+    background: url("img/pan.png");
 }
 
 
 .pic3 {
     background-size: contain;
-    background: url("IMG/Sv.png");
+    background: url("img/Sv.png");
 }
 
 .pic4 {
     height: 160px;
     width: 508px;
-    background: url("IMG/at.png");
+    background: url("img/at.png");
 }
 
 
