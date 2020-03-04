@@ -77,13 +77,16 @@
     <div class="position-center kon">
         <div id="contentContainer">
             <div id="wrapper">
-                <div id="itemOne" class="content showing">
-                </div>
-                <div id="itemTwo" class="content">
-                </div>
-                <div id="itemThree" class="content">
-                </div>
-                <div id="itemFor" class="content">
+            <div id="itemOne" class="item content" data-pos="0px">
+        
+            </div>
+            <div id="itemTwo" class="item content" data-pos="-1080px" >
+        
+            </div>
+            <div id="itemThree" class="item content" data-pos="-2160px" >
+        
+            </div>
+            <div id="itemFour"  class= "item content" data-pos="-3240px">
                     <div class="col-8">
                         <div class="main-titel">ОТЗЫВЫ О НАС</div>
                         <div class="main-text">
@@ -154,39 +157,87 @@
     </div>
 </footer>
 <script>
-    //начало отсчета 
-    var slideIndex = 1;
-    showSlides(slideIndex);
-    //следующй слайд
-    function plusSlide() {
-        showSlides(slideIndex += 1);
-    }
-    // предыдущий слайд
-    function minusSlide() {
-        showSlides(slideIndex -= 1);
-    }
-    //текущий слайд 
-    function currentSlide(n) {
-        showSlides(slideIndex = n);
-    }
-    //слайдер
-    function showSlides(n) {
-        var i;
-        var slides = document.getElementsByClassName("content");
-        if (n > slides.length) {
-            slideIndex = 1
-        }
-        if (n < 1) {
-            slideIndex = slides.length;
-        }
-        for (i = 0; i < slides.length; i++) {
-            slides[i].style.display = "none";
-        }
+var links = document.querySelectorAll(".item");
+var wrapper = document.querySelector("#wrapper");
+//метка для активного элемента
+var activeLink = 0;
+//устанавливаем отслеживание событий
+for (var i = 0; i < links.length; i++) {
+var link = links[i];
+link.addEventListener('click', setClickedItem, false);
+ // определяем элемент для activeLink
+link.itemID = i;
+}
+// устанавливаем первый элемент в качестве активного
+links[activeLink].classList.add("active");
+// переключение состояния ссылок на неактивное 
+function setClickedItem(e) {
+removeActiveLinks();
+resetTimer();
+var clickedLink = e.target;
+activeLink = clickedLink.itemID;
 
-        slides[slideIndex - 1].style.display = "block";
-
+changePosition(clickedLink);
+}
+function removeActiveLinks() {
+    for (var i = 0; i < links.length; i++) {
+        links[i].classList.remove("active");
     }
+}
+
+function changePosition(link) {
+link.classList.add("active");
+
+var position = link.getAttribute("data-pos");
+//переключает визуальное отображение
+var translateValue = "translate3d(" + position + ", 0px, 0)";
+//Устанавливает позицию элемента оболочки.
+wrapper.style[transformProperty] = translateValue;
+}
+var transforms = ["transform",
+        "msTransform",
+        "webkitTransform",
+        "mozTransform",
+        "oTransform"];
+
+var transformProperty = getSupportedPropertyName(transforms);
+
+
+function getSupportedPropertyName(properties) {
+for (var i = 0; i < properties.length; i++) {
+    if (typeof document.body.style[properties[i]] != "undefined") {
+        return properties[i];
+    }
+}
+return null;
+}
+
+var timeoutID;
+
+function startTimer() {
+timeoutID = window.setInterval(goToNextItem, 3000);
+}
+startTimer();
+
+function resetTimer() {
+window.clearInterval(timeoutID);
+startTimer();
+}
+
+function goToNextItem() {
+removeActiveLinks();
+
+if (activeLink < links.length - 1) {
+    activeLink++;
+} else {
+    activeLink = 0;
+}
+
+var newLink = links[activeLink];
+changePosition(newLink);
+}
 
 </script>
+
 </body>
 </html>
