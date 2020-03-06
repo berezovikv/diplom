@@ -75,44 +75,46 @@
 </div>
 <div class="color">
     <div class="position-center kon">
-        <div id="contentContainer">
-            <div id="wrapper">
-            <div id="itemOne" class="item content" data-pos="0px">
-        
-            </div>
-            <div id="itemTwo" class="item content" data-pos="-1080px" >
-        
-            </div>
-            <div id="itemThree" class="item content" data-pos="-2160px" >
-        
-            </div>
-            <div id="itemFour"  class= "item content" data-pos="-3240px">
-                    <div class="col-8">
-                        <div class="main-titel">ОТЗЫВЫ О НАС</div>
-                        <div class="main-text">
-                            <p>Это развивающийся портал контентного наполнения сайтов. Карьерный рост здесь – престижно
-                                для многих</br>
-                                копирайтеров и заказчиков. Компания проводит постоянный мониторинг сайтов</br>
-                                -конкурентов, а потому</br>
-                                динамично развивается с введением чего-то нового, но уже востребованного. </p>
-                            <p>Пока спектр услуг здесь не очень широк – биржи копирайтинга и рерайтинга, магазин статей
-                                и новостей – но <br> сайт обещает не останавливаться на достигнутом, а прогрессировать
-                                семимильными шагами. </p>
-                            <div class="name">Иванов Петр Васильевич</div>
-                            <p class="job">Генеральный директор</p>
-                        </div>
-                        <div class="center">
-                            <button class=all>Все отзывы </button>
-                        </div>
-                    </div>
-
+        <div class="slider">
+            <div class="wrapper">
+              <div class="items">
+                <div class="item">
+                  <img class="img-fluid" src="img/21.png" alt="c1">
                 </div>
-
+                <div class="item">
+                  <img class="img-fluid" src="img/12345.jpg" alt="c2">
+                </div>
+                <div class="item">
+                  <img class="img-fluid" src="img/123456.jpg" alt="c3">
+                </div>
+                <div class="item">
+                  <div class="col-8">
+                    <div class="main-titel">ОТЗЫВЫ О НАС</div>
+                    <div class="main-text">
+                        <p>Это развивающийся портал контентного наполнения сайтов. Карьерный рост здесь – престижно
+                            для многих</br>
+                            копирайтеров и заказчиков. Компания проводит постоянный мониторинг сайтов</br>
+                            -конкурентов, а потому</br>
+                            динамично развивается с введением чего-то нового, но уже востребованного. </p>
+                        <p>Пока спектр услуг здесь не очень широк – биржи копирайтинга и рерайтинга, магазин статей
+                            и новостей – но <br> сайт обещает не останавливаться на достигнутом, а прогрессировать
+                            семимильными шагами. </p>
+                        <div class="name">Иванов Петр Васильевич</div>
+                        <p class="job">Генеральный директор</p>
+                    </div>
+                    <div class="center">
+                        <button class=all>Все отзывы </button>
+                    </div>
+                </div>
+                </div>
+              </div>
             </div>
-        </div>
-        <button class="prev" onclick="minusSlide()">&#10094</button>
-        <button class="next" onclick="plusSlide()">&#10095</button>
+            <a class="sliderСontrol sliderСontrol_prev" href="#" role="button"></a>
+            <a class="sliderСontrol sliderСontrol_next" href="#" role="button"></a>
+          </div>
+        
     </div>
+   
 </div>
 
 <div class="position-center">
@@ -157,86 +159,222 @@
     </div>
 </footer>
 <script>
-var links = document.querySelectorAll(".item");
-var wrapper = document.querySelector("#wrapper");
-//метка для активного элемента
-var activeLink = 0;
-//устанавливаем отслеживание событий
-for (var i = 0; i < links.length; i++) {
-var link = links[i];
-link.addEventListener('click', setClickedItem, false);
- // определяем элемент для activeLink
-link.itemID = i;
-}
-// устанавливаем первый элемент в качестве активного
-links[activeLink].classList.add("active");
-// переключение состояния ссылок на неактивное 
-function setClickedItem(e) {
-removeActiveLinks();
-resetTimer();
-var clickedLink = e.target;
-activeLink = clickedLink.itemID;
+ var slideShow = (function () {
+      return function (selector, config) {
+        var
+          slider = document.querySelector(selector), // основный элемент блока
+          sliderContainer = slider.querySelector('.items'), // контейнер для .slider-item
+          sliderItems = slider.querySelectorAll('.item'), // коллекция .slider-item
+          sliderControls = slider.querySelectorAll('.sliderСontrol'), // элементы управления
+          currentPosition = 0, // позиция левого активного элемента
+          transformValue = 0, // значение транфсофрмации .wrapper
+          transformStep  = 100, // величина шага (для трансформации)
+          itemsArray  = [], // массив элементов
+          timerId,
+          indicatorItems,
+          indicatorIndex = 0,
+          indicatorIndexMax = sliderItems.length - 1,
+          stepTouch = 50,
+          configs = {
+            isAutoplay: false, // автоматическая смена слайдов
+            directionAutoplay: 'next', // направление смены слайдов
+            delayAutoplay: 3000, // интервал между автоматической сменой слайдов
+            isPauseOnHover: true // устанавливать ли паузу при поднесении курсора к слайдеру
+          };
 
-changePosition(clickedLink);
-}
-function removeActiveLinks() {
-    for (var i = 0; i < links.length; i++) {
-        links[i].classList.remove("active");
-    }
-}
+        // настройка конфигурации слайдера в зависимости от полученных ключей
+        for (var key in config) {
+          if (key in configs) {
+            configs[key] = config[key];
+          }
+        }
 
-function changePosition(link) {
-link.classList.add("active");
+        // наполнение массива itemsArray 
+        for (var i = 0, length = sliderItems.length; i < length; i++) {
+          itemsArray.push({ item: sliderItems[i], position: i, transform: 0 });
+        }
 
-var position = link.getAttribute("data-pos");
-//переключает визуальное отображение
-var translateValue = "translate3d(" + position + ", 0px, 0)";
-//Устанавливает позицию элемента оболочки.
-wrapper.style[transformProperty] = translateValue;
-}
-var transforms = ["transform",
-        "msTransform",
-        "webkitTransform",
-        "mozTransform",
-        "oTransform"];
+        // переменная position содержит методы с помощью которой можно получить минимальный и максимальный индекс элемента, а также соответствующему этому индексу позицию
+        var position = {
+          getItemIndex: function (mode) {
+            var index = 0;
+            for (var i = 0, length = itemsArray .length; i < length; i++) {
+              if ((itemsArray[i].position < itemsArray[index].position && mode === 'min') || (itemsArray[i].position > itemsArray[index].position && mode === 'max')) {
+                index = i;
+              }
+            }
+            return index;
+          },
+          getItemPosition: function (mode) {
+            return itemsArray[position.getItemIndex(mode)].position;
+          }
+        };
 
-var transformProperty = getSupportedPropertyName(transforms);
+        // функция, выполняющая смену слайда в указанном направлении
+        var move = function (direction) {
+          var nextItem, currentIndicator = indicatorIndex;;
+          if (direction === 'next') {
+            currentPosition++;
+            if (currentPosition > position.getItemPosition('max')) {
+              nextItem = position.getItemIndex('min');
+              itemsArray[nextItem].position = position.getItemPosition('max') + 1;
+              itemsArray[nextItem].transform += itemsArray.length * 100;
+              itemsArray[nextItem].item.style.transform = 'translateX(' + itemsArray[nextItem].transform + '%)';
+            }
+            transformValue -= transformStep ;
+            indicatorIndex = indicatorIndex + 1;
+            if (indicatorIndex > indicatorIndexMax) {
+              indicatorIndex = 0;
+            }
+          } else {
+            currentPosition--;
+            if (currentPosition < position.getItemPosition('min')) {
+              nextItem = position.getItemIndex('max');
+              itemsArray[nextItem].position = position.getItemPosition('min') - 1;
+              itemsArray[nextItem].transform -= itemsArray .length * 100;
+              itemsArray[nextItem].item.style.transform = 'translateX(' + itemsArray [nextItem].transform + '%)';
+            }
+            transformValue += transformStep ;
+            indicatorIndex = indicatorIndex - 1;
+            if (indicatorIndex < 0) {
+              indicatorIndex = indicatorIndexMax;
+            }
+          }
+          sliderContainer.style.transform = 'translateX(' + transformValue + '%)';
+          indicatorItems[currentIndicator].classList.remove('active');
+          indicatorItems[indicatorIndex].classList.add('active');
+        };
 
+        // функция, осуществляющая переход к слайду по его порядковому номеру
+        var moveTo = function (index) {
+          var i = 0, direction = (index > indicatorIndex) ? 'next' : 'prev';
+          while (index !== indicatorIndex && i <= indicatorIndexMax) {
+            move(direction);
+            i++;
+          }
+        };
 
-function getSupportedPropertyName(properties) {
-for (var i = 0; i < properties.length; i++) {
-    if (typeof document.body.style[properties[i]] != "undefined") {
-        return properties[i];
-    }
-}
-return null;
-}
+        // функция для запуска автоматической смены слайдов через промежутки времени
+        var startAutoplay = function () {
+          if (!configs.isAutoplay) {
+            return;
+          }
+          stopAutoplay();
+          timerId = setInterval(function () {
+            move(configs.directionAutoplay);
+          }, configs.delayAutoplay);
+        };
 
-var timeoutID;
+        // функция, отключающая автоматическую смену слайдов
+        var stopAutoplay = function () {
+          clearInterval(timerId);
+        };
 
-function startTimer() {
-timeoutID = window.setInterval(goToNextItem, 3000);
-}
-startTimer();
+        // функция, добавляющая индикаторы к слайдеру
+        var addIndicators = function () {
+          var indicatorsContainer = document.createElement('ol');
+          indicatorsContainer.classList.add('slider__indicators');
+          for (var i = 0, length = sliderItems.length; i < length; i++) {
+            var sliderIndicatorsItem = document.createElement('li');
+            if (i === 0) {
+              sliderIndicatorsItem.classList.add('active');
+            }
+            sliderIndicatorsItem.setAttribute("data-slide-to", i);
+            indicatorsContainer.appendChild(sliderIndicatorsItem);
+          }
+          slider.appendChild(indicatorsContainer);
+          indicatorItems = slider.querySelectorAll('.slider__indicators > li')
+        };
 
-function resetTimer() {
-window.clearInterval(timeoutID);
-startTimer();
-}
+        var _isTouchDevice = function () {
+          return !!('ontouchstart' in window || navigator.maxTouchPoints);
+        };
 
-function goToNextItem() {
-removeActiveLinks();
+        // функция, осуществляющая установку обработчиков для событий 
+        var setUpListeners = function () {
+          var startX = 0;
+          if (_isTouchDevice()) {
+            slider.addEventListener('touchstart', function (e) {
+              startX = e.changedTouches[0].clientX;
+              startAutoplay();
+            });
+            slider.addEventListener('touchend', function (e) {
+              var
+                endX = e.changedTouches[0].clientX,
+                deltaX = endX - startX;
+              if (deltaX > stepTouch) {
+                move('prev');
+              } else if (deltaX < -stepTouch) {
+                move('next');
+              }
+              startAutoplay();
+            });
+          } else {
+            for (var i = 0, length = sliderControls.length; i < length; i++) {
+              sliderControls[i].classList.add('sliderСontrol_show');
+            }
+          }
+          slider.addEventListener('click', function (e) {
+            if (e.target.classList.contains('sliderСontrol')) {
+              e.preventDefault();
+              move(e.target.classList.contains('sliderСontrol_next') ? 'next' : 'prev');
+              startAutoplay();
+            } else if (e.target.getAttribute('data-slide-to')) {
+              e.preventDefault();
+              moveTo(parseInt(e.target.getAttribute('data-slide-to')));
+              startAutoplay();
+            }
+          });
+          document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === "hidden") {
+              stopAutoplay();
+            } else {
+              startAutoplay();
+            }
+          }, false);
+          if (configs.isPauseOnHover && configs.isAutoplay) {
+            slider.addEventListener('mouseenter', function () {
+              stopAutoplay();
+            });
+            slider.addEventListener('mouseleave', function () {
+              startAutoplay();
+            });
+          }
+        };
 
-if (activeLink < links.length - 1) {
-    activeLink++;
-} else {
-    activeLink = 0;
-}
+        // добавляем индикаторы к слайдеру
+        addIndicators();
+        // установливаем обработчики для событий
+        setUpListeners();
+        // запускаем автоматическую смену слайдов, если установлен соответствующий ключ
+        startAutoplay();
 
-var newLink = links[activeLink];
-changePosition(newLink);
-}
+        return {
+          // метод слайдера для перехода к следующему слайду
+          next: function () {
+            move('next');
+          },
+          // метод слайдера для перехода к предыдущему слайду          
+          left: function () {
+            move('prev');
+          },
+          // метод отключающий автоматическую смену слайдов
+          stop: function () {
+            configs.isAutoplay = false;
+            stopAutoplay();
+          },
+          // метод запускающий автоматическую смену слайдов
+          cycle: function () {
+            configs.isAutoplay = true;
+            startAutoplay();
+          }
+        }
+      }
+    }());
 
+    slideShow('.slider', {
+      isAutoplay: true
+    });
 </script>
 
 </body>
