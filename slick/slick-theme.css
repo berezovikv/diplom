@@ -71,7 +71,7 @@
     line-height: 1;
 
     opacity: .75;
-    color: gray;
+    color: grey;
 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -79,11 +79,11 @@
 
 .slick-prev
 {
-    left: 0px;
+    left: 25px;
 }
 [dir='rtl'] .slick-prev
 {
-    right: 0px;
+    right: 25px;
     left: auto;
 }
 .slick-prev:before
@@ -97,12 +97,12 @@
 
 .slick-next
 {
-    right: 0px;
+    right: 25px;
 }
 [dir='rtl'] .slick-next
 {
     right: auto;
-    left: 0px;
+    left: 25px;
 }
 .slick-next:before
 {
@@ -122,7 +122,7 @@
 .slick-dots
 {
     position: absolute;
-    bottom: -25px;
+    bottom: 25px;
 
     display: block;
 
