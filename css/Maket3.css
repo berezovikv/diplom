@@ -279,13 +279,13 @@ a { cursor: pointer;
 .kon {
     display: flex;
 }
-.main{
+.main {
     max-width: 1080px;
     margin: 20px auto;
   }
   /*стили слайдера*/
   
-  .sl__slide{
+  .sl__slide {
     position: relative;
   }
 .col-8 {
